@@ -224,13 +224,13 @@
 	<category>
 		<pattern>我想购买
 </pattern>
-		<template>科天云在每个不同的区域都有相应的负责人。 您可以留下您的联系方式，我们会安排区域负责人与您对接
+		<template>科天云在每个不同的区域都有相应的负责人，您可以留下您的联系方式，我们会安排区域负责人与您对接
 </template>
 	</category>
 	<category>
 		<pattern>我想买
 </pattern>
-		<template>科天云在每个不同的区域都有相应的负责人。 您可以留下您的联系方式，我们会安排区域负责人与您对接
+		<template>科天云在每个不同的区域都有相应的负责人，您可以留下您的联系方式，我们会安排区域负责人与您对接
 </template>
 	</category>
 	<category>

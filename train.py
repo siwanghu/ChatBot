@@ -211,4 +211,5 @@ def predict_from_network(input_seq):
                 return " ".join(outputs_seq)
             else:
                 return "我的知识还不够多，听不懂你在说什么"
+
 predict_from_file()

@@ -22,7 +22,7 @@ def predict_tensorflow():
         else:
             print("原始: "+input_str)
             input_str=similarity(input_str)
-            result="请直接说出你的问题"
+            result="。"
             if len(input_str)==0:
                 print("输出: " + result)
                 return jsonify({"result":result})
@@ -50,7 +50,7 @@ def predict_aiml():
             else:                        
                 print("原始: "+input_str)
                 input_str=similarity(input_str)
-                result="请直接说出你的问题"
+                result="。"
                 if len(input_str)==0:
                     print("输出: " + result)
                     return jsonify({"result":result})
@@ -61,7 +61,7 @@ def predict_aiml():
                 return jsonify({"result":result})
 
 def preproccess_str(input_str):
-    return input_str.replace("。","").replace(",","").replace("？","").replace(" ","")
+    return input_str.replace("。","").replace(",","").replace("？","").replace("！","").replace(" ","")
 
 def similarity(input_str):
     global ret,num
