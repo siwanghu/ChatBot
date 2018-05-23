@@ -42,4 +42,3 @@ class WordToken(object):
             return self.id2word_dict[id]
         else:
             return None
-
