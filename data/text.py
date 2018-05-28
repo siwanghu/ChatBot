@@ -3,6 +3,7 @@ import re
 import json
 import nltk
 import jieba
+import matplotlib.pyplot as plt
 
 def extract_chinese(intput_str):  
     match = re.compile('[^\u4e00-\u9fa5]')   
@@ -89,5 +90,12 @@ def word_frequency():
         result=nltk.probability.FreqDist(result_word)
     return result
 
-for word in word_frequency().most_common(100):
+frequency=word_frequency().most_common(100)
+for word in frequency:
     print(word)
+X=range(len([x for (x,y) in frequency]))
+Y=[y for (x,y) in frequency]
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.title('词频统计图') 
+plt.plot(X,Y)
+plt.show()
