@@ -34,7 +34,3 @@ with open("./mybot/ketian.aiml","wb") as file:
 
 lines=open("./mybot/ketian.aiml","rb").readlines()
 open("./mybot/ketian.aiml","wb").writelines(lines[1:])
-
-
-
-

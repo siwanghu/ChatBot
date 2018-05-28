@@ -20,8 +20,8 @@ def predict_tensorflow():
             ret,num=[],0
             return ""
         else:
-            print("原始: "+input_str)
-            input_str=similarity(input_str)
+            #print("原始: "+input_str)
+            #input_str=similarity(input_str)
             result="。"
             if len(input_str)==0:
                 print("输出: " + result)

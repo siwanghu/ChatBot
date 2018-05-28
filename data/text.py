@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import re  
+import json
+import nltk
+import jieba
 
 def extract_chinese(intput_str):  
     match = re.compile('[^\u4e00-\u9fa5]')   
@@ -57,4 +60,34 @@ def divide_info():
                     line=file_read.readline()
                     line=str(line,"utf-8")
 
-divide_info()
+def jsonParse():
+    with open("./myfile.txt","w",encoding="utf-8") as file_obj:
+        dicts=json.load(open("./qafile.txt",encoding="utf-8"))
+        for qa in dicts:
+            file_obj.writelines(qa["queation"]+"\n")
+            file_obj.writelines(qa["answer"]+"\n")
+            
+def word_frequency():
+    result_word=[]
+    stop_word=["\r\n","\n"]
+    with open("./stopwords.txt","rb") as file_read:
+        line=file_read.readline()
+        line=str(line,"utf-8").replace("\r\n","").replace("\n","")
+        while line:
+            stop_word.append(line)
+            line=file_read.readline()
+            line=str(line,"utf-8").replace("\r\n","").replace("\n","")
+    with open("./info.txt","rb") as file_read:
+        line=file_read.readline()
+        line=str(line,"utf-8")
+        while line:
+            for word in jieba.cut(line):
+                if word not in stop_word:
+                    result_word.append(word)
+            line=file_read.readline()
+            line=str(line,"utf-8")
+        result=nltk.probability.FreqDist(result_word)
+    return result
+
+for word in word_frequency().most_common(100):
+    print(word)

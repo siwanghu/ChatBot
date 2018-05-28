@@ -188,7 +188,7 @@ def predict_from_file():
 def predict_from_network(input_seq):
     with tf.Session() as sess:
         encoder_inputs, decoder_inputs, target_weights, outputs, loss, update, saver, learning_rate_decay_op, learning_rate = get_model(feed_previous=True)
-        saver.restore(sess, './model/demo')
+        saver.restore(sess, '../model/demo')
         if input_seq!=None:
             input_seq = input_seq.strip()
             input_id_list = get_id_list_from(input_seq)
