@@ -4,6 +4,8 @@ import json
 import nltk
 import jieba
 import matplotlib.pyplot as plt
+from gensim import models
+from sklearn.cluster import KMeans
 
 def extract_chinese(intput_str):  
     match = re.compile('[^\u4e00-\u9fa5]')   
@@ -90,12 +92,35 @@ def word_frequency():
         result=nltk.probability.FreqDist(result_word)
     return result
 
-frequency=word_frequency().most_common(100)
-for word in frequency:
-    print(word)
-X=range(len([x for (x,y) in frequency]))
-Y=[y for (x,y) in frequency]
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.title('词频统计图') 
-plt.plot(X,Y)
-plt.show()
+def show_frequency():
+    frequency=word_frequency().most_common(100)
+# =============================================================================
+#     for word in frequency:
+#         print(word)
+# =============================================================================
+    X=range(len([x for (x,y) in frequency]))
+    Y=[y for (x,y) in frequency]
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+    plt.title('词频统计图') 
+    plt.plot(X,Y)
+    plt.show()
+    
+def cluster(n_clusters):
+    result=[]
+    model = models.Word2Vec.load("../word2vec/word2vec_model")
+    frequency=word_frequency().most_common(100)
+    features=[model[x] for (x,y) in frequency]
+    k_means = KMeans(n_clusters=n_clusters)
+    k_model=k_means.fit(features)
+    for index in range(len(k_model.labels_)):
+        result.append((k_model.labels_[index],frequency[index][0]))
+    list.sort(result)
+    return result
+dicts,clusters={},20
+for _ in range(clusters):
+    dicts[_]=[]
+for result in cluster(clusters):
+    dicts[result[0]].append(result[1])
+for key,value in dicts.items():
+    print("第"+str(key+1)+"类： ",value)
+show_frequency()
