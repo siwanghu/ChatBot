@@ -93,11 +93,9 @@ def word_frequency():
     return result
 
 def show_frequency():
-    frequency=word_frequency().most_common(100)
-# =============================================================================
-#     for word in frequency:
-#         print(word)
-# =============================================================================
+    frequency=word_frequency().most_common(50)
+    for word in frequency:
+        print(word)
     X=range(len([x for (x,y) in frequency]))
     Y=[y for (x,y) in frequency]
     plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -105,22 +103,23 @@ def show_frequency():
     plt.plot(X,Y)
     plt.show()
     
-def cluster(n_clusters):
+def cluster(n_clusters=25):
     result=[]
     model = models.Word2Vec.load("../word2vec/word2vec_model")
-    frequency=word_frequency().most_common(100)
+    frequency=word_frequency().most_common(50)
     features=[model[x] for (x,y) in frequency]
     k_means = KMeans(n_clusters=n_clusters)
     k_model=k_means.fit(features)
     for index in range(len(k_model.labels_)):
         result.append((k_model.labels_[index],frequency[index][0]))
     list.sort(result)
-    return result
-dicts,clusters={},20
-for _ in range(clusters):
-    dicts[_]=[]
-for result in cluster(clusters):
-    dicts[result[0]].append(result[1])
-for key,value in dicts.items():
-    print("第"+str(key+1)+"类： ",value)
+    dicts,clusters={},n_clusters
+    for _ in range(clusters):
+        dicts[_]=[]
+    for result in result:
+        dicts[result[0]].append(result[1])
+    for key,value in dicts.items():
+        print("第"+str(key+1)+"类： ",value)
+
+cluster()
 show_frequency()
