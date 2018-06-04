@@ -6,7 +6,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 model = models.Word2Vec.load("./word2vec/word2vec_model")
 
-print(model["会议"])
-result = model.most_similar(["会议"])
+print(model["价格"])
+result = model.most_similar(["价格"])
 for value in result:
     print(value[0], value[1])

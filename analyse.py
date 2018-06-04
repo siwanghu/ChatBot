@@ -33,4 +33,6 @@ def extract_keyword(input_str):
     wordposseg=set(__word_posseg(input_str))
     return list(keyword & wordposseg)
 
-print(extract_keyword("启动"))
+print(__extract_keyword_TFidf("你们这的智能机器人多少钱"))
+print(__word_posseg("你们这的智能机器人多少钱"))
+print(extract_keyword("你们这的智能机器人多少钱"))
