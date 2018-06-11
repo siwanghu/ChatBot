@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import re  
+import os
 import json
 import nltk
 import jieba
 import matplotlib.pyplot as plt
 from gensim import models
 from sklearn.cluster import KMeans
+from stanfordcorenlp import StanfordCoreNLP 
 
 def extract_chinese(intput_str):  
     match = re.compile('[^\u4e00-\u9fa5]')   
@@ -23,10 +25,11 @@ def extract_info():
                     obj="in"
                 else:
                     obj="out"
-                    obj=obj+" "+extract_chinese(line)+"\n"
-                    line=file_read.readline()
-                    line=str(line,"utf-8")
-                    file_write.writelines(obj)
+                obj=obj+" "+extract_chinese(line)+"\n"
+                line=file_read.readline()
+                line=str(line,"utf-8")
+                print(obj)
+                file_write.writelines(obj)
 
 def get_info():
     with open("./text.txt","rb") as file_read:
@@ -50,15 +53,15 @@ def get_info():
                 line=str(line,"utf-8")
 
 def divide_info():
-    with open("./info.txt","rb") as file_read:
-        with open("./question","w",encoding="utf-8") as file_question:
-            with open("./answer","w",encoding="utf-8") as file_answer:
+    with open("./text.txt","rb") as file_read:
+        with open("./question.txt","w",encoding="utf-8") as file_question:
+            with open("./answer.txt","w",encoding="utf-8") as file_answer:
                 line=file_read.readline()
                 line=str(line,"utf-8")
                 while line:
-                    if "in" in line:
+                    if "in" in line and len(extract_chinese(line))>3:
                         file_question.writelines(extract_chinese(line)+"\n")
-                    elif "out" in line:
+                    elif "out" in line and len(extract_chinese(line))>3:
                         file_answer.writelines(extract_chinese(line)+"\n")
                     line=file_read.readline()
                     line=str(line,"utf-8")
@@ -120,6 +123,41 @@ def cluster(n_clusters=25):
         dicts[result[0]].append(result[1])
     for key,value in dicts.items():
         print("第"+str(key+1)+"类： ",value)
+        
+def create_file():
+    path=r"C:\Users\siwanghu\Desktop\chatbot\data\split_question"
+    os.chdir(path)
+    frequency=word_frequency().most_common(50)
+    for word in frequency:
+        word=word[0]
+        print("处理: ",word)
+        file=open(word+".txt","w")
+        file.close()
+        
+def cluster_question():
+    path=r"C:\Users\siwanghu\Desktop\chatbot\data\split_question"
+    frequency=word_frequency().most_common(50)
+    for word in frequency:
+        word=word[0]
+        print("处理: ",word)
+        with open("./question.txt","rb") as file_read:
+            with open(path+"\\"+word+".txt","w",encoding="utf-8") as file_writer:
+                line=file_read.readline()
+                line=str(line,"utf-8")
+                while line:
+                    words=jieba.cut(line)
+                    words=[key for key in words]
+                    if word in words:
+                        file_writer.writelines(line)
+                    line=file_read.readline()
+                    line=str(line,"utf-8")
 
-cluster()
-show_frequency()
+def stanford_nlp(input_str):
+    nlp=StanfordCoreNLP(r"C:\Users\siwanghu\Desktop\stanford-corenlp-full",lang="zh")
+    return (nlp.word_tokenize(input_str),\
+            nlp.pos_tag(input_str),\
+            nlp.ner(input_str),\
+            nlp.parse(input_str),\
+            nlp.dependency_parse(input_str))
+
+cluster_question()
