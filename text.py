@@ -4,6 +4,8 @@ import os
 import json
 import nltk
 import jieba
+import analyse
+import numpy
 import matplotlib.pyplot as plt
 from gensim import models
 from sklearn.cluster import KMeans
@@ -16,8 +18,8 @@ def extract_chinese(intput_str):
     return chinese.split(",")[0]
 
 def extract_info():
-    with open("./uk_chat_message.sql","rb") as file_read:
-        with open("./text.txt","w",encoding="utf-8") as file_write:
+    with open("./data/uk_chat_message.sql","rb") as file_read:
+        with open("./data/text.txt","w",encoding="utf-8") as file_write:
             line=file_read.readline()
             line=str(line,"utf-8")
             while line:
@@ -32,8 +34,8 @@ def extract_info():
                 file_write.writelines(obj)
 
 def get_info():
-    with open("./text.txt","rb") as file_read:
-        with open("./info.txt","w",encoding="utf-8") as file_write:
+    with open("./data/text.txt","rb") as file_read:
+        with open("./data/info.txt","w",encoding="utf-8") as file_write:
             line=file_read.readline()
             line=str(line,"utf-8")
             write=""
@@ -53,9 +55,9 @@ def get_info():
                 line=str(line,"utf-8")
 
 def divide_info():
-    with open("./text.txt","rb") as file_read:
-        with open("./question.txt","w",encoding="utf-8") as file_question:
-            with open("./answer.txt","w",encoding="utf-8") as file_answer:
+    with open("./data/text.txt","rb") as file_read:
+        with open("./data/question.txt","w",encoding="utf-8") as file_question:
+            with open("./data/answer.txt","w",encoding="utf-8") as file_answer:
                 line=file_read.readline()
                 line=str(line,"utf-8")
                 while line:
@@ -67,8 +69,8 @@ def divide_info():
                     line=str(line,"utf-8")
 
 def jsonParse():
-    with open("./myfile.txt","w",encoding="utf-8") as file_obj:
-        dicts=json.load(open("./qafile.txt",encoding="utf-8"))
+    with open("./data/myfile.txt","w",encoding="utf-8") as file_obj:
+        dicts=json.load(open("./data/qafile.txt",encoding="utf-8"))
         for qa in dicts:
             file_obj.writelines(qa["queation"]+"\n")
             file_obj.writelines(qa["answer"]+"\n")
@@ -76,14 +78,14 @@ def jsonParse():
 def word_frequency():
     result_word=[]
     stop_word=["\r\n","\n"]
-    with open("./stopwords.txt","rb") as file_read:
+    with open("./data/stopwords.txt","rb") as file_read:
         line=file_read.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","")
         while line:
             stop_word.append(line)
             line=file_read.readline()
             line=str(line,"utf-8").replace("\r\n","").replace("\n","")
-    with open("./info.txt","rb") as file_read:
+    with open("./data/info.txt","rb") as file_read:
         line=file_read.readline()
         line=str(line,"utf-8")
         while line:
@@ -108,7 +110,7 @@ def show_frequency():
     
 def cluster(n_clusters=25):
     result=[]
-    model = models.Word2Vec.load("../word2vec/word2vec_model")
+    model = models.Word2Vec.load("./word2vec/word2vec_model")
     frequency=word_frequency().most_common(50)
     features=[model[x] for (x,y) in frequency]
     k_means = KMeans(n_clusters=n_clusters)
@@ -134,13 +136,13 @@ def create_file():
         file=open(word+".txt","w")
         file.close()
         
-def cluster_question():
+def split_question():
     path=r"C:\Users\siwanghu\Desktop\chatbot\data\split_question"
     frequency=word_frequency().most_common(50)
     for word in frequency:
         word=word[0]
         print("处理: ",word)
-        with open("./question.txt","rb") as file_read:
+        with open("./data/question.txt","rb") as file_read:
             with open(path+"\\"+word+".txt","w",encoding="utf-8") as file_writer:
                 line=file_read.readline()
                 line=str(line,"utf-8")
@@ -152,6 +154,39 @@ def cluster_question():
                     line=file_read.readline()
                     line=str(line,"utf-8")
 
+def cluster_question(n_clusters=25):
+    result=[]
+    lines=[]
+    model = models.Word2Vec.load("./word2vec/word2vec_model")
+    with open("./data/question.txt","rb") as file:
+        line=file.readline()
+        line=str(line,"utf-8")
+        while line:
+            words=analyse.extract_keyword(line)
+            try:
+                keys=numpy.array([model[word] for word in words])
+            except:
+                line=file.readline()
+                line=str(line,"utf-8")
+                continue
+            keys=numpy.sum(keys,axis=0)/len(words)
+            lines.append((line,keys))
+            line=file.readline()
+            line=str(line,"utf-8")
+    features=[y for (x,y) in lines]
+    k_means = KMeans(n_clusters=n_clusters)
+    k_model=k_means.fit(features)
+    for index in range(len(k_model.labels_)):
+        result.append((k_model.labels_[index],lines[index][0]))
+    list.sort(result)
+    dicts,clusters={},n_clusters
+    for _ in range(clusters):
+        dicts[_]=[]
+    for result in result:
+        dicts[result[0]].append(result[1])
+    for key,value in dicts.items():
+        print("第"+str(key+1)+"类： ",value)
+    
 def stanford_nlp(input_str):
     nlp=StanfordCoreNLP(r"C:\Users\siwanghu\Desktop\stanford-corenlp-full",lang="zh")
     return (nlp.word_tokenize(input_str),\

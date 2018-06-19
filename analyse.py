@@ -12,13 +12,15 @@ def __cut_word(input_str):
 def __extract_keyword_TFidf(input_str):
     keyword=[]
     for key,weight in analyse.extract_tags(input_str,withWeight=True,topK=5):
-        keyword.append(key)
+        if len(key)<3:
+            keyword.append(key)
     return keyword
 
 def __extract_keyword_TextRank(input_str):
     keyword=[]
     for key,weight in analyse.textrank(input_str,withWeight=True,topK=5):
-        keyword.append(key)
+        if len(key)<3:
+            keyword.append(key)
     return keyword
 
 def __word_posseg(input_str):
@@ -33,6 +35,4 @@ def extract_keyword(input_str):
     wordposseg=set(__word_posseg(input_str))
     return list(keyword & wordposseg)
 
-print(__extract_keyword_TFidf("你们这的智能机器人多少钱"))
-print(__word_posseg("你们这的智能机器人多少钱"))
-print(extract_keyword("你们这的智能机器人多少钱"))
+print(extract_keyword("这个需不需要额外设备的主要是云还是"))
