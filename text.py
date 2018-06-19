@@ -154,25 +154,25 @@ def split_question():
                     line=file_read.readline()
                     line=str(line,"utf-8")
 
-def cluster_question(n_clusters=25):
+def cluster_question(n_clusters=30):
     result=[]
     lines=[]
     model = models.Word2Vec.load("./word2vec/word2vec_model")
-    with open("./data/question.txt","rb") as file:
+    with open("./data/split_question/产品.txt","rb") as file:
         line=file.readline()
-        line=str(line,"utf-8")
+        line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
         while line:
             words=analyse.extract_keyword(line)
             try:
                 keys=numpy.array([model[word] for word in words])
             except:
                 line=file.readline()
-                line=str(line,"utf-8")
+                line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
                 continue
             keys=numpy.sum(keys,axis=0)/len(words)
             lines.append((line,keys))
             line=file.readline()
-            line=str(line,"utf-8")
+            line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
     features=[y for (x,y) in lines]
     k_means = KMeans(n_clusters=n_clusters)
     k_model=k_means.fit(features)
@@ -185,7 +185,7 @@ def cluster_question(n_clusters=25):
     for result in result:
         dicts[result[0]].append(result[1])
     for key,value in dicts.items():
-        print("第"+str(key+1)+"类： ",value)
+        print("第"+str(key+1)+"类： ",value[0:2])
     
 def stanford_nlp(input_str):
     nlp=StanfordCoreNLP(r"C:\Users\siwanghu\Desktop\stanford-corenlp-full",lang="zh")
