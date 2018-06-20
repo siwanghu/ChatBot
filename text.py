@@ -154,11 +154,11 @@ def split_question():
                     line=file_read.readline()
                     line=str(line,"utf-8")
 
-def cluster_question(n_clusters=30):
+def cluster_question(n_clusters=10):
     result=[]
     lines=[]
     model = models.Word2Vec.load("./word2vec/word2vec_model")
-    with open("./data/split_question/产品.txt","rb") as file:
+    with open("./data/split_question/硬件.txt","rb") as file:
         line=file.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
         while line:
@@ -185,7 +185,7 @@ def cluster_question(n_clusters=30):
     for result in result:
         dicts[result[0]].append(result[1])
     for key,value in dicts.items():
-        print("第"+str(key+1)+"类： ",value[0:2])
+        print("第"+str(key+1)+"类： ",value[0:3])
     
 def stanford_nlp(input_str):
     nlp=StanfordCoreNLP(r"C:\Users\siwanghu\Desktop\stanford-corenlp-full",lang="zh")
