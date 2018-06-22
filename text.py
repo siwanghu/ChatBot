@@ -78,14 +78,14 @@ def jsonParse():
 def word_frequency():
     result_word=[]
     stop_word=["\r\n","\n"]
-    with open("./data/stopwords.txt","rb") as file_read:
+    with open("./stopwords.txt","rb") as file_read:
         line=file_read.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","")
         while line:
             stop_word.append(line)
             line=file_read.readline()
             line=str(line,"utf-8").replace("\r\n","").replace("\n","")
-    with open("./data/info.txt","rb") as file_read:
+    with open("./info.txt","rb") as file_read:
         line=file_read.readline()
         line=str(line,"utf-8")
         while line:
@@ -98,7 +98,7 @@ def word_frequency():
     return result
 
 def show_frequency():
-    frequency=word_frequency().most_common(50)
+    frequency=word_frequency().most_common(100)
     for word in frequency:
         print(word)
     X=range(len([x for (x,y) in frequency]))
@@ -139,32 +139,40 @@ def create_file():
 def split_question():
     path=r"C:\Users\siwanghu\Desktop\chatbot\data\split_question"
     frequency=word_frequency().most_common(50)
+    frequency=[x for (x,y) in frequency]
+    dicts={}
     for word in frequency:
-        word=word[0]
+        dicts[word]=[]
+    for word in frequency:
         print("处理: ",word)
         with open("./data/question.txt","rb") as file_read:
+            line=file_read.readline()
+            line=str(line,"utf-8")
             with open(path+"\\"+word+".txt","w",encoding="utf-8") as file_writer:
                 line=file_read.readline()
                 line=str(line,"utf-8")
                 while line:
                     words=jieba.cut(line)
-                    words=[key for key in words]
+                    words=[key for key in words if key in frequency]
                     if word in words:
                         file_writer.writelines(line)
                     line=file_read.readline()
                     line=str(line,"utf-8")
 
-def cluster_question(n_clusters=10):
+def cluster_question(n_clusters=30):
     result=[]
     lines=[]
     model = models.Word2Vec.load("./word2vec/word2vec_model")
-    with open("./data/split_question/硬件.txt","rb") as file:
+    frequency=word_frequency().most_common(200)
+    frequency=[x for (x,y) in frequency]
+    file_writer=open("./data/split_question/产品_聚类.txt","w")
+    with open("./data/split_question/产品.txt","rb") as file:
         line=file.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
         while line:
-            words=analyse.extract_keyword(line)
+            words=analyse.__cut_word(line)
             try:
-                keys=numpy.array([model[word] for word in words])
+                keys=numpy.array([model[word] for word in words if word in frequency])
             except:
                 line=file.readline()
                 line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
@@ -176,6 +184,7 @@ def cluster_question(n_clusters=10):
     features=[y for (x,y) in lines]
     k_means = KMeans(n_clusters=n_clusters)
     k_model=k_means.fit(features)
+    ids=k_model.cluster_centers_
     for index in range(len(k_model.labels_)):
         result.append((k_model.labels_[index],lines[index][0]))
     list.sort(result)
@@ -185,7 +194,11 @@ def cluster_question(n_clusters=10):
     for result in result:
         dicts[result[0]].append(result[1])
     for key,value in dicts.items():
-        print("第"+str(key+1)+"类： ",value[0:3])
+        print("第"+str(key+1)+"类： ",value)
+        file_writer.writelines("第"+str(key+1)+"类： "+str(value[0:4])+"\n")
+        file_writer.writelines("语义向量："+str(ids[key])+"\n")
+        file_writer.writelines("\n\n")
+    file_writer.close()
     
 def stanford_nlp(input_str):
     nlp=StanfordCoreNLP(r"C:\Users\siwanghu\Desktop\stanford-corenlp-full",lang="zh")
@@ -195,4 +208,4 @@ def stanford_nlp(input_str):
             nlp.parse(input_str),\
             nlp.dependency_parse(input_str))
 
-cluster_question()
+split_question()

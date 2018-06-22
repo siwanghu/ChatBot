@@ -170,9 +170,10 @@
 >  
 > [pyemd参考资料](https://github.com/wmayner/pyemd)&nbsp;&nbsp;&nbsp;&nbsp;[EMD介绍](https://blog.csdn.net/index20001/article/details/77162495)  
 >  
-# Seq2Seq模型  
+# 闲聊设计    
+> 使用seq2seq2模型，在tensorflow上实现  
 > **pip install tensorflow-gpu**  
-> [tensorflow实现](https://github.com/siwanghu/chabot/blob/master/train.py)  
+> [实现代码](https://github.com/siwanghu/chabot/blob/master/train.py)  
 >  
 > ![模型图](./data/seq2seq.png)  
 # Elasticsearch  
@@ -222,3 +223,21 @@
 > 第8类：  ['一般视频会议需要些什么硬件设备', '不需要硬件支持吗', '会议室需要什么硬件支持呢']  
 > 第9类：  ['一年包含硬件吗', '不用其他硬件', '不用其他硬件吗']  
 > 第10类：  ['后期会有硬件视频会议需求', '对硬件有什么需求吗', '或者对硬件有什么需求你们也可以给我们方案']  
+# 方案设计  
+> **设计图**  
+>  
+> ![方案](./data/scheme.PNG)  
+> **方案步骤**  
+> 1.原始数据-->数据分词-->语料IDF计算 **(计算原始语料数据词语IDF值)**  
+>  
+> 2.原始数据-->数据分词-->Word2Vec词向量训练 **(训练词向量)**  
+>  
+> 3.Word2Vec词向量训练-->同义词分析 **(分析高频词同义词)**  
+>  
+> 4.原始数据-->数据分词-->词频统计-->高频词聚类-->问题提取-->意图分类 **(意图提取)**  
+>  
+> 5.意图分类-->TF-IDF关键词提取-->语义向量构建-->文本聚类-->问题分类 **(问题细分)**  
+>  
+> **第4步：先按照提取问题中含有的关键字优先级 *(以词频表示优先级)* 对问题做出意图分类**  
+> **第5步：对第4步中分类的每个意图分别采取文本聚类 *(语义向量构建)* 进一步对意图分类**  
+> 
