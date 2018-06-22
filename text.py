@@ -159,14 +159,37 @@ def split_question():
                     line=file_read.readline()
                     line=str(line,"utf-8")
 
+def split_question2():
+    path=r"C:\Users\siwanghu\Desktop\chatbot\data\split_question"
+    frequency=word_frequency().most_common(50)
+    frequency=[x for (x,y) in frequency]
+    file_dicts={}
+    for word in frequency:
+        file_dicts[word]=open(path+"\\"+word+".txt","w",encoding="utf-8")
+    with open("./data/question.txt","rb") as file_read:
+        line=file_read.readline()
+        line=str(line,"utf-8")
+        print("处理....")
+        while line:
+            itrs=jieba.cut(line)
+            words=[itr for itr in itrs if itr in frequency]
+            for word in frequency:
+                if word in words:
+                    file_dicts[word].writelines(line)
+                    break
+            line=file_read.readline()
+            line=str(line,"utf-8")
+    for word in file_dicts.keys():
+        file_dicts[word].close()
+
 def cluster_question(n_clusters=30):
     result=[]
     lines=[]
     model = models.Word2Vec.load("./word2vec/word2vec_model")
     frequency=word_frequency().most_common(200)
     frequency=[x for (x,y) in frequency]
-    file_writer=open("./data/split_question/产品_聚类.txt","w")
-    with open("./data/split_question/产品.txt","rb") as file:
+    file_writer=open("./data/split_question/会议_聚类.txt","w")
+    with open("./data/split_question/会议.txt","rb") as file:
         line=file.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
         while line:
@@ -208,4 +231,4 @@ def stanford_nlp(input_str):
             nlp.parse(input_str),\
             nlp.dependency_parse(input_str))
 
-split_question()
+cluster_question()
