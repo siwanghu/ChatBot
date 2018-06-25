@@ -188,8 +188,8 @@ def cluster_question(n_clusters=30):
     model = models.Word2Vec.load("./word2vec/word2vec_model")
     frequency=word_frequency().most_common(200)
     frequency=[x for (x,y) in frequency]
-    file_writer=open("./data/split_question/会议_聚类.txt","w")
-    with open("./data/split_question/会议.txt","rb") as file:
+    file_writer=open("./data/split_question/产品_聚类.txt","w")
+    with open("./data/split_question/产品.txt","rb") as file:
         line=file.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
         while line:

@@ -82,7 +82,7 @@
 >功能 0.6855509281158447  
 >智能 0.6630642414093018  
 >代理 0.6596889495849609  
-# 高频词聚类(意图分析) 
+# 高频词聚类(意图分析)
 > **pip install sckit-learn**    
 > **k-means聚类算法**    
 >第1类：  ['手机', '电脑', '网页']  
@@ -173,7 +173,7 @@
 # 闲聊设计    
 > 使用seq2seq2模型，在tensorflow上实现  
 > **pip install tensorflow-gpu**  
-> [实现代码](https://github.com/siwanghu/chabot/blob/master/train.py)  
+> [实现代码](https://github.com/siwanghu/chabot/blob/master/train.py)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[注意力机制](https://blog.csdn.net/malefactor/article/details/78767781)  
 >  
 > ![模型图](./data/seq2seq.png)  
 # Elasticsearch  
@@ -240,4 +240,4 @@
 >  
 > **第4步：先按照提取问题中含有的关键字优先级 *(以词频表示优先级)* 对问题做出意图分类**  
 > **第5步：对第4步中分类的每个意图分别采取文本聚类 *(语义向量构建)* 进一步对意图分类**  
-> 
+>  
