@@ -173,7 +173,7 @@
 # 闲聊设计    
 > 使用seq2seq2模型，在tensorflow上实现  
 > **pip install tensorflow-gpu**  
-> [实现代码](https://github.com/siwanghu/chabot/blob/master/train.py)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[注意力机制](https://blog.csdn.net/malefactor/article/details/78767781)  
+> [实现代码](https://github.com/siwanghu/chabot/blob/master/train.py)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[注意力机制](https://blog.csdn.net/malefactor/article/details/78767781)  
 >  
 > ![模型图](./data/seq2seq.png)  
 # Elasticsearch  

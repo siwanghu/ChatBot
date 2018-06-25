@@ -182,29 +182,31 @@ def split_question2():
     for word in file_dicts.keys():
         file_dicts[word].close()
 
-def cluster_question(n_clusters=30):
+def cluster_question(file_name,n_clusters):
     result=[]
     lines=[]
     model = models.Word2Vec.load("./word2vec/word2vec_model")
-    frequency=word_frequency().most_common(200)
+    frequency=word_frequency().most_common(100)
     frequency=[x for (x,y) in frequency]
-    file_writer=open("./data/split_question/产品_聚类.txt","w")
-    with open("./data/split_question/产品.txt","rb") as file:
+    file_writer=open("./data/split_question/"+file_name+"_聚类.txt","w")
+    with open("./data/split_question/"+file_name+".txt","rb") as file:
         line=file.readline()
         line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
         while line:
             words=analyse.__cut_word(line)
+            extract=[]
             try:
-                keys=numpy.array([model[word] for word in words if word in frequency])
+                extract=[word for word in words if word in frequency]
+                keys=numpy.array([model[word] for word in extract])
             except:
                 line=file.readline()
                 line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
                 continue
             keys=numpy.sum(keys,axis=0)/len(words)
-            lines.append((line,keys))
+            lines.append((line,keys,extract))
             line=file.readline()
             line=str(line,"utf-8").replace("\r\n","").replace("\n","").replace("\r","")
-    features=[y for (x,y) in lines]
+    features=[y for (x,y,z) in lines]
     k_means = KMeans(n_clusters=n_clusters)
     k_model=k_means.fit(features)
     ids=k_model.cluster_centers_
@@ -218,7 +220,7 @@ def cluster_question(n_clusters=30):
         dicts[result[0]].append(result[1])
     for key,value in dicts.items():
         print("第"+str(key+1)+"类： ",value)
-        file_writer.writelines("第"+str(key+1)+"类： "+str(value[0:4])+"\n")
+        file_writer.writelines("第"+str(key+1)+"类： "+str(value)+"\n")
         file_writer.writelines("语义向量："+str(ids[key])+"\n")
         file_writer.writelines("\n\n")
     file_writer.close()
@@ -231,4 +233,17 @@ def stanford_nlp(input_str):
             nlp.parse(input_str),\
             nlp.dependency_parse(input_str))
 
-cluster_question()
+def get_file_size(file):
+    fsize = os.path.getsize(file)
+    fsize = fsize/float(1024)
+    return int(fsize)+1
+
+def cluster_all_question():
+    frequency=word_frequency().most_common(50)
+    frequency=[x for (x,y) in frequency]
+    for word in frequency:
+        fsize=get_file_size("./data/split_question/"+word+".txt")
+        print("处理：",word,fsize)
+        cluster_question(word,fsize)
+
+cluster_all_question()
