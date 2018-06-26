@@ -9,6 +9,7 @@ import numpy
 import matplotlib.pyplot as plt
 from gensim import models
 from sklearn.cluster import KMeans
+from apyori import apriori
 from stanfordcorenlp import StanfordCoreNLP 
 
 def extract_chinese(intput_str):  
@@ -246,4 +247,13 @@ def cluster_all_question():
         print("处理：",word,fsize)
         cluster_question(word,fsize)
 
-cluster_all_question()
+def test_my_apyori():
+    data=[['豆奶','莴苣'],\
+          ['莴苣','尿布','葡萄酒','甜菜'],\
+          ['豆奶','尿布','葡萄酒','橙汁'],\
+          ['莴苣','豆奶','尿布','葡萄酒'],\
+          ['莴苣','豆奶','尿布','橙汁']]
+    result=list(apriori(transactions=data))
+    print(result)
+
+test_my_apyori()

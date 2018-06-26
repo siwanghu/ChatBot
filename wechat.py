@@ -22,4 +22,3 @@ def return_text_content(msg):
     
 itchat.auto_login()
 itchat.run()
-
