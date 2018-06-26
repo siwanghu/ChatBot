@@ -178,11 +178,15 @@
 > [pyemd参考资料](https://github.com/wmayner/pyemd)&nbsp;&nbsp;&nbsp;&nbsp;[EMD介绍](https://blog.csdn.net/index20001/article/details/77162495)  
 >  
 # 闲聊设计    
-> 使用seq2seq2模型，在tensorflow上实现  
+> **1.使用seq2seq2模型，在tensorflow上实现**  
 > **pip install tensorflow-gpu**  
 > [实现代码](https://github.com/siwanghu/chabot/blob/master/train.py)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[注意力机制](https://blog.csdn.net/malefactor/article/details/78767781)  
 >  
 > ![模型图](./data/seq2seq.png)  
+>  
+> **2.图灵机器人**  
+> **pip install itchat**  
+> [实现代码](https://github.com/siwanghu/chabot/blob/master/wechat.py)  
 # Elasticsearch  
 > **pip install elasticsearch**  
 > 基于Lucene的全文搜索引擎  
