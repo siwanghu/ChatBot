@@ -117,7 +117,7 @@
 > 关联规则是形如X→Y的表达式，其中X和Y是不相交的项集，即X∩Y=∅。关联规则的强度可以用支持度和置信度衡量。支持度确定规则可以用于给定数据集的频繁程度，而置信度确定Y在包含X的事务中出现的频繁程度。支持度(s)和置信度(c)的形式定义如下：  
 > ![定义](./data/6261.PNG)  
 > ![公式](./data/6262.PNG)  
-> **Apriori算法**&nbsp;&nbsp; **FP增长算法**  
+> **Apriori算法**&nbsp;&nbsp; [FP增长算法](https://blog.csdn.net/qq_23100787/article/details/51790637)  
 > [参考资料](http://crescentmoon.info/2013/02/18/%E3%80%8A%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E5%AF%BC%E8%AE%BA%E3%80%8B%E6%80%BB%E7%BB%93%E4%B9%8B%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/)  
 # 关键词提取  
 > **pip install jieba**
