@@ -5,12 +5,15 @@ import json
 import nltk
 import jieba
 import analyse
-import numpy
+import numpy,scipy
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+import numpy as np
 from gensim import models
 from sklearn.cluster import KMeans
 from apyori import apriori
 from stanfordcorenlp import StanfordCoreNLP 
+from wordcloud import WordCloud
 
 def extract_chinese(intput_str):  
     match = re.compile('[^\u4e00-\u9fa5]')   
@@ -95,7 +98,7 @@ def word_frequency():
                     result_word.append(word)
             line=file_read.readline()
             line=str(line,"utf-8")
-        result=nltk.probability.FreqDist(result_word)
+    result=nltk.probability.FreqDist(result_word)
     return result
 
 def show_frequency():
@@ -126,6 +129,7 @@ def cluster(n_clusters=25):
         dicts[result[0]].append(result[1])
     for key,value in dicts.items():
         print("第"+str(key+1)+"类： ",value)
+    return dicts
         
 def create_file():
     path=r"C:\Users\siwanghu\Desktop\chatbot\data\split_question"
@@ -256,4 +260,71 @@ def test_my_apyori():
     result=list(apriori(transactions=data))
     print(result)
 
-test_my_apyori()
+def drawWordCloud(seg_list):
+    color_mask = scipy.misc.imread("./1.png")
+    wc = WordCloud(
+        font_path="simkai.ttf",
+        background_color='white',
+        mask=color_mask,
+        max_words=50,
+        max_font_size=200
+    )
+    wc.generate(" ".join(seg_list))
+    wc.to_file("ciyun.jpg")
+    plt.imshow(wc, interpolation="bilinear")
+
+def word_cloud():
+    result_word=[]
+    stop_word=["\r\n","\n"]
+    with open("./stopwords.txt","rb") as file_read:
+        line=file_read.readline()
+        line=str(line,"utf-8").replace("\r\n","").replace("\n","")
+        while line:
+            stop_word.append(line)
+            line=file_read.readline()
+            line=str(line,"utf-8").replace("\r\n","").replace("\n","")
+    with open("./info.txt","rb") as file_read:
+        line=file_read.readline()
+        line=str(line,"utf-8")
+        while line:
+            for word in jieba.cut(line):
+                if word not in stop_word:
+                    result_word.append(word)
+            line=file_read.readline()
+            line=str(line,"utf-8")
+    drawWordCloud(result_word)
+    
+def cluster_report():
+    dicts=cluster()
+    words=word_frequency().most_common(50)
+    nums={}
+    for key,value in words:
+        nums[key]=value
+    plt.rcParams['font.sans-serif']=['SimHei']
+    plt.figure(figsize=(10,12)) 
+    labels = ["第"+str(key+1)+"类" for key in range(25)]
+    sizes = [] 
+    for key,value in dicts.items():
+        pty=0
+        for word in value:
+            pty=pty+nums[word]
+        sizes.append(pty)
+    a = np.random.rand(1,26)
+    color_vals = list(a[0])
+    my_norm = mpl.colors.Normalize(-1, 1) # 将颜色数据的范围设置为 [0, 1]
+    my_cmap = mpl.cm.get_cmap('rainbow', len(color_vals)) # 可选择合适的colormap，如：'rainbow'
+    patches,text1,text2 = plt.pie(sizes,
+                      labels=labels,
+                      colors=my_cmap(my_norm(color_vals)),
+                      labeldistance = 1.2,
+                      autopct = '%3.2f%%', 
+                      shadow = False, 
+                      startangle =90, 
+                      pctdistance = 0.6) 
+    plt.axis('off')
+    plt.legend(patches, labels, loc='center left')
+    plt.tight_layout()
+    plt.axis('equal')
+    plt.legend()
+    plt.savefig('./2.png') 
+    plt.show()

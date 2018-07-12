@@ -61,7 +61,8 @@
 >('功能', 551)  
 >('点击', 540)  
 >  
-> ![词频分布图](./data/word.PNG)
+> ![词频分布图](./data/word.PNG)  
+> ![分布图](./data/ciyun.jpg)
 # Word2Vec词向量训练  
 >  **pip install gensim**  
 > 构建三层神经网络，分别是输入层，隐藏层,softmax输出层。对词进行one-hot编码，输入网络训练，词向量训练结果为词one-hot向量与网络隐藏层中间权重矩阵相乘  
